@@ -71,6 +71,8 @@ async function listenToEvents() {
 				28
 			)} to: ${to.substring(28)}, amount: ${newAmount}</li>`;
 
+			setMembersCount();
+
 			console.log(from, to, oldAmount, newAmount);
 		}
 	);
