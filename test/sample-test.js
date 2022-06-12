@@ -1,19 +1,19 @@
-const Greeter = artifacts.require("Greeter");
+const { expect } = require("chai");
+const { ethers } = require("hardhat");
 
-describe("Greeter contract", function () {
-  let accounts;
+describe("Greeter", function () {
+  it("Should return the new greeting once it's changed", async function () {
+    const Greeter = await ethers.getContractFactory("Greeter");
+    const greeter = await Greeter.deploy("Hello, world!");
+    await greeter.deployed();
 
-  before(async function () {
-    accounts = await web3.eth.getAccounts();
-  });
+    expect(await greeter.greet()).to.equal("Hello, world!");
 
-  describe("Deployment", function () {
-    it("Should deploy with the right greeting", async function () {
-      const greeter = await Greeter.new("Hello, world!");
-      assert.equal(await greeter.greet(), "Hello, world!");
+    const setGreetingTx = await greeter.setGreeting("Hola, mundo!");
 
-      const greeter2 = await Greeter.new("Hola, mundo!");
-      assert.equal(await greeter2.greet(), "Hola, mundo!");
-    });
+    // wait until the transaction is mined
+    await setGreetingTx.wait();
+
+    expect(await greeter.greet()).to.equal("Hola, mundo!");
   });
 });

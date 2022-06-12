@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<link rel="icon" type="image/svg+xml" href="favicon.svg" />
+		<link
+			rel="stylesheet"
+			href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+			integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+			crossorigin="anonymous"
+		/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Wallet App</title>
+		<style>
+			.card-container {
+				width: 600px;
+				height: 900px;
+				background: #2699fb;
+				border: 1px solid #2699fb;
+				border-radius: 10px;
+				opacity: 1;
+				margin-right: auto;
+				margin-left: auto;
+				border-left: 0;
+			}
+
+			.icon-circle {
+				background: white;
+				border-radius: 200px;
+				height: 70px;
+				font-weight: bold;
+				width: 70px;
+				display: table;
+				margin-top: 12px;
+				margin-left: 31px;
+			}
+
+			.bloc {
+				margin-top: 12px;
+				margin-left: 28px;
+			}
+
+			.Member-count {
+				margin-top: 7px;
+				margin-left: 31px;
+			}
+
+			.Member-card {
+				width: 600px;
+				height: 900px;
+				border: 1px solid #ffffff;
+				background: #ffffff;
+				border-radius: 25px 25px 10px 10px;
+				opacity: 1;
+				position: relative;
+			}
+
+			.fab {
+				background: #2699fb;
+				border-radius: 200px;
+				height: 40px;
+				width: 40px;
+				font-weight: bold;
+				border: 0;
+				position: absolute;
+				right: 0;
+				bottom: 0;
+				margin-right: 27px;
+				margin-bottom: 31px;
+			}
+
+			.add-Member-container {
+				top: 150px;
+				width: 300px;
+				height: 187px;
+				background: #ffffff;
+				border-radius: 25px 25px 0px 0px;
+				opacity: 1;
+				position: absolute;
+			}
+
+			.Member-done {
+				color: gray;
+				text-decoration: line-through;
+			}
+		</style>
+	</head>
+	<body style="background: #bce0fd">
+		<div id="app">
+			<div class="card-container my-5 border-left-0">
+				<img
+					class="icon-circle px-2 py-2"
+					src="./assets/wallet.png"
+					alt="icon"
+				/>
+				<!-- <div class="icon-circle">
+					
+				</div> -->
+				<h2 class="bloc text-white"><strong>Audience</strong></h2>
+				<p id="MemberCount" class="Member-count text-white">0 Members</p>
+
+				<div class="Member-card">
+					<h3>history</h3>
+					<!-- Member List-->
+					<ul id="historyList" class="list-group mt-3"></ul>
+					<!-- #Member List-->
+
+					<!-- Add Member Modal -->
+					<div
+						id="add-Member-container"
+						class="modal add-Member-container"
+						data-backdrop="static"
+					>
+						<div class="container">
+							<div class="col mx-2">
+								<h5 class="text-primary text-center mt-4">New Member</h5>
+								<input id="new-Member" class="mt-3" type="text" />
+								<button
+									type="button"
+									data-dismiss="modal"
+									class="btn btn-primary btn-block mt-3"
+									onclick="addMember(document.getElementById('new-Member').value);"
+								>
+									Add Member
+								</button>
+							</div>
+						</div>
+					</div>
+					<!-- #Add Member Modal -->
+				</div>
+			</div>
+		</div>
+		<script type="module" src="/src/main.ts"></script>
+	</body>
+</html>

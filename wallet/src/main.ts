@@ -1,0 +1,84 @@
+import "./style.css";
+import { ethers } from "ethers";
+import WalletArtifact from "../../artifacts/contracts/Wallet.sol/Wallet.json";
+import { MetamaskProvider } from "./meta.type";
+
+const contractAddress = "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9";
+const HARDHAT_NETWORK_ID = "31337";
+const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
+let userAddress = "";
+let wallet: ethers.Contract;
+let provider: ethers.providers.Web3Provider;
+let membersCount = 0;
+
+// htmlElements
+
+const memberCountHtml = document.getElementById("MemberCount");
+const historyListHtml = document.getElementById("historyList");
+
+// const app = document.querySelector<HTMLDivElement>('#app')!
+
+// app.innerHTML = `
+//   <h1>Hello Vite!</h1>
+//   <a href="https://vitejs.dev/guide/features.html" target="_blank">Documentation</a>
+// `
+if ((window as any).ethereum === undefined) {
+	alert("Please install metamask extension");
+}
+console.log(ethers);
+
+async function connectWallet() {
+	const accounts = await (window as any).ethereum?.request({
+		method: "eth_requestAccounts",
+	});
+	userAddress = accounts[0];
+	console.log(userAddress);
+}
+
+// (window as any).ethereum.on("chainChanged", (data: any[]) => {
+// 	console.log("chainChanged");
+
+// 	console.log(data);
+// });
+
+async function initContract() {
+	provider = new ethers.providers.Web3Provider((window as any).ethereum);
+	wallet = new ethers.Contract(
+		contractAddress,
+		WalletArtifact.abi,
+		provider.getSigner(0)
+	);
+	console.log(wallet);
+	return Promise.resolve();
+}
+
+async function setMembersCount() {
+	const count = await wallet.allowanceCount();
+	membersCount = ethers.BigNumber.from(count).toNumber();
+	console.log(membersCount);
+
+	memberCountHtml!.innerHTML = `${membersCount} `;
+	memberCountHtml!.innerHTML += membersCount !== 1 ? "Members" : "Member";
+}
+
+async function setPollingData() {}
+
+async function listenToEvents() {
+	wallet.on(
+		wallet.filters["AllowanceChange"](),
+		(from, to, oldAmount, newAmount) => {
+			console.log("AllowanceChange event");
+			historyListHtml!.innerHTML += `<li>from:${from.substring(
+				28
+			)} to: ${to.substring(28)}, amount: ${newAmount}</li>`;
+
+			console.log(from, to, oldAmount, newAmount);
+		}
+	);
+}
+
+await connectWallet();
+await initContract();
+await setPollingData();
+await setMembersCount();
+await listenToEvents();
