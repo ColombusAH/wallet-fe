@@ -7,7 +7,7 @@ const contractAddress = "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9";
 const HARDHAT_NETWORK_ID = "31337";
 const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
 let userAddress = "";
-let wallet: ethers.Contract;
+let walletContract: ethers.Contract;
 let provider: ethers.providers.Web3Provider;
 let membersCount = 0;
 
@@ -25,9 +25,8 @@ const historyListHtml = document.getElementById("historyList");
 if ((window as any).ethereum === undefined) {
 	alert("Please install metamask extension");
 }
-console.log(ethers);
 
-async function connectWallet() {
+async function connectWalletAndSetUserAddress() {
 	const accounts = await (window as any).ethereum?.request({
 		method: "eth_requestAccounts",
 	});
@@ -43,17 +42,17 @@ async function connectWallet() {
 
 async function initContract() {
 	provider = new ethers.providers.Web3Provider((window as any).ethereum);
-	wallet = new ethers.Contract(
+	walletContract = new ethers.Contract(
 		contractAddress,
 		WalletArtifact.abi,
 		provider.getSigner(0)
 	);
-	console.log(wallet);
+	console.log(walletContract);
 	return Promise.resolve();
 }
 
 async function setMembersCount() {
-	const count = await wallet.allowanceCount();
+	const count = await walletContract.allowanceCount();
 	membersCount = ethers.BigNumber.from(count).toNumber();
 	console.log(membersCount);
 
@@ -64,8 +63,8 @@ async function setMembersCount() {
 async function setPollingData() {}
 
 async function listenToEvents() {
-	wallet.on(
-		wallet.filters["AllowanceChange"](),
+	walletContract.on(
+		walletContract.filters["AllowanceChange"](),
 		(from, to, oldAmount, newAmount) => {
 			console.log("AllowanceChange event");
 			historyListHtml!.innerHTML += `<li>from:${from.substring(
@@ -77,7 +76,7 @@ async function listenToEvents() {
 	);
 }
 
-await connectWallet();
+await connectWalletAndSetUserAddress();
 await initContract();
 await setPollingData();
 await setMembersCount();
