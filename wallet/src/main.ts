@@ -2,8 +2,11 @@ import "./style.css";
 import { ethers } from "ethers";
 import WalletArtifact from "../../artifacts/contracts/Wallet.sol/Wallet.json";
 import { MetamaskProvider } from "./meta.type";
+import { hexZeroPad } from "ethers/lib/utils";
 
-const contractAddress = "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9";
+// following that https://hardhat.org/getting-started 
+
+const contractAddress = "the contract address that get from the deploy stage ";
 const HARDHAT_NETWORK_ID = "31337";
 const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
 let userAddress = "";
@@ -73,7 +76,14 @@ async function listenToEvents() {
 
 			setMembersCount();
 
-			console.log(from, to, oldAmount, newAmount);
+			// console.log(from, to, oldAmount, newAmount);
+		}
+	);
+
+	walletContract.on(
+		walletContract.filters["AllowanceChange"](null, userAddress),
+		(from, to, old, a) => {
+			console.log(from, to, old, a);
 		}
 	);
 }
